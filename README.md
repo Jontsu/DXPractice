@@ -13,3 +13,20 @@ Teachers can create exercises in the tool, which consist of different coding tas
 - **Exercise Creation (Teachers only):** Only teachers can create a new exercise by providing the name of the exercise and a list of tasks in text format.
 - **Exercise Deletion (Teachers only):** Teachers can delete exercises that they have created.
 - **Access Student Performance (Teachers only):** Teachers can access statistics that show the performance of each student on every exercise they have created, including the grades they have received based on peer reviews.
+
+## Developing
+
+Add .env file into the root of the project with the following lines providing your secret key and your project folder root between sqlite:/// and /database.db so that SQLite can create a dev environment database
+
+.env
+```bash
+SECRET_KEY=your-secret-key
+SQLALCHEMY_DATABASE_URI=sqlite:///[path/to/your/project/directory]/database.db
+```
+
+secret key can be generated with Python interpreter by running command 'python' or 'python3' in your terminal and typing the following
+
+```bash
+import os
+print(os.urandom(24))
+```
