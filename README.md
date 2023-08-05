@@ -14,19 +14,39 @@ Teachers can create exercises in the tool, which consist of different coding tas
 - **Exercise Deletion (Teachers only):** Teachers can delete exercises that they have created.
 - **Access Student Performance (Teachers only):** Teachers can access statistics that show the performance of each student on every exercise they have created, including the grades they have received based on peer reviews.
 
+## Current Application Build
+[Current version can be viewed here](https://guarded-taiga-97204-f0af444033df.herokuapp.com)
+
+## TO DO's
+- Implement a feature for returning solutions, which includes an input field for GitHub links.
+- Develop a peer review system for solutions.
+- Create a user statistics feature to track and display user activity.
+- Develop a student performance tracking system.
+- Define and implement teacher and student roles, each with their appropriate access restrictions. Only teachers should be able to create exercises.
+- Implement input verifications for user data, such as ensuring email addresses are in the correct format and passwords meet minimum complexity requirements.
+- Improve error handling to provide more informative and user-friendly error messages.
+- Improve the styling of the exercise page for better user experience.
+- Add an edit functionality for the exercise, but only for the user who created it.
+
 ## Developing
 
-Add .env file into the root of the project with the following lines providing your secret key and your project folder root between sqlite:/// and /database.db so that SQLite can create a dev environment database
+Create a .env file in the root directory of the project and add the following line, replacing your-secret-key with your actual secret key:
 
 .env
 ```bash
 SECRET_KEY=your-secret-key
-SQLALCHEMY_DATABASE_URI=sqlite:///[path/to/your/project/directory]/database.db
 ```
 
-secret key can be generated with Python interpreter by running command 'python' or 'python3' in your terminal and typing the following
+You can generate a secret key using Python. Open the Python interpreter by typing python or python3 in your terminal, then enter the following commands:
 
 ```bash
 import os
 print(os.urandom(24))
+```
+
+To install the necessary dependencies and start the development server, execute the following commands in your terminal. Make sure you are in the root directory of the application:
+
+```bash
+pip install -r requirements.txt
+flask run
 ```
