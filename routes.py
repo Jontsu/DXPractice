@@ -11,6 +11,7 @@ def register_routes(app):
 
     @app.route('/login', methods=['GET', 'POST'])
     def login_route():
+        error=None
         if request.method == 'POST':
             username = request.form.get('username')
             password = request.form.get('password')
@@ -18,8 +19,13 @@ def register_routes(app):
                 session['username'] = username
                 return redirect(url_for('index_route'))
             else:
-                raise Exception("Invalid credentials")
-        return render_template('login.html')
+                error = "Invalid credentials"
+        return render_template('login.html', error=error)
+
+    @app.route('/logout')
+    def logout_route():
+        session.pop('username', None)
+        return redirect(url_for('index_route'))
 
     @app.route('/register', methods=['GET', 'POST'])
     def register_route():
@@ -29,6 +35,7 @@ def register_routes(app):
             password = request.form.get('password')
             role = request.form.get('role')
             if register_user(username, email, password, role):
+                session['username'] = username
                 return redirect(url_for('index_route'))
             else:
                 raise Exception("Registration failed")
