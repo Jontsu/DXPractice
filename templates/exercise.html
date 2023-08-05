@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ exercise.name }}</title>
+</head>
+<body>
+    <h1>{{ exercise.name }}</h1>
+    <p>Created by: {{ creator.username }}</p>
+    <h2>Tasks:</h2>
+    <p>{{ exercise.tasks }}</p>
+    
+    {% if session.username == creator.username %}
+        <form action="{{ url_for('delete_exercise_route', exercise_id=exercise.id) }}" method="POST">
+            <input type="submit" value="Delete Exercise">
+        </form>
+    {% endif %}
+    
+    <a href="{{ url_for('index_route') }}">Back to Index</a>
+</body>
+</html>

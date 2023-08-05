@@ -1,6 +1,6 @@
 from db import db
 from models import User
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 
 def login_user(username, password):
     user = User.query.filter_by(username=username).first()
