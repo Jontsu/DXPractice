@@ -1,23 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>DX Practice</title>
-</head>
-<body>
-    <h1>Welcome to the DX Practice tool!</h1>
-    <a href="{{ url_for('login_route') }}">Login</a> |
-    <a href="{{ url_for('register_route') }}">Register</a>
-    <a href="{{ url_for('create_exercise_route') }}">Create Exercise</a>
-
-    <h2>Available Exercises</h2>
+{% extends "layout.html" %}
+{% block content %}
+    <div class="input-field">
+        <a href="{{ url_for('create_exercise_route') }}">Create Exercise</a>
+        <h2>Available Exercises</h2>
+    </div>
     <ul>
        {% if exercises %}
            {% for exercise in exercises %}
-               <li><a href="/exercise/{{ exercise.id }}">{{ exercise.name }}</a></li>
+               <a href="/exercise/{{ exercise.id }}" class="exercise-link">
+                   <div class="exercise-box">
+                       <li>
+                           <span class="exercise-title">{{ exercise.name }}</span>
+                           <p>{{ exercise.tasks[:250] }}{% if exercise.tasks|length > 100 %}...{% endif %}</p>
+                       </li>
+                   </div>
+               </a>
            {% endfor %}
        {% else %}
            <li>No exercises available.</li>
        {% endif %}
     </ul>
-</body>
-</html>
+{% endblock %}

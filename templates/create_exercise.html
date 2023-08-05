@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Exercise</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block content %}
     <h1>Create Exercise</h1>
     <form method="POST">
-        Name: <input type="text" name="name"><br>
-        Tasks: <textarea name="tasks"></textarea><br>
-        <input type="submit" value="Create Exercise">
+        <div class="input-field">
+            Name: <input type="text" name="name"><br>
+            Tasks: <textarea name="tasks"></textarea><br>
+        </div>   
+        <input type="submit" value="Create" class="button input-button">
     </form>
-</body>
-</html>
+{% endblock %}

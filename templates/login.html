@@ -1,14 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block content %}
     <h1>Login</h1>
     <form method="POST">
-        Username: <input type="text" name="username"><br>
-        Password: <input type="password" name="password"><br>
-        <input type="submit" value="Login">
+        <div class="input-field">
+            Username: <input type="text" name="username"><br>
+            Password: <input type="password" name="password"><br>
+        </div>
+        <input type="submit" value="Login" class="button input-button">
+        <a href="{{ url_for('register_route') }}" class="button">Register</a>
     </form>
-</body>
-</html>
+    {% if error %}
+        <p class="error-message">{{ error }}</p>
+    {% endif %}
+{% endblock %}
