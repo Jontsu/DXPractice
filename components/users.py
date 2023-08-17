@@ -1,15 +1,39 @@
+from sqlalchemy import text
+from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy.exc import IntegrityError
+
 from db import db
-from models import User
-from werkzeug.security import check_password_hash
+
+
+def get_user_by_username(username):
+    sql = text("SELECT * FROM users WHERE username = :username")
+    result = db.session.execute(sql, {"username": username})
+    user = result.fetchone()
+    return user
+
 
 def login_user(username, password):
-    user = User.query.filter_by(username=username).first()
-    if user and check_password_hash(user.password, password):
-        return True
-    return False
+    try:
+        sql = text("SELECT password FROM users WHERE username = :username")
+        result = db.session.execute(sql, {"username": username})
+        user = result.fetchone()
+
+        if user and check_password_hash(user[0], password):
+            return True
+        
+        return False
+    except Exception as e:
+        raise Exception(f"Error logging in: {str(e)}")
+
 
 def register_user(username, email, password, role):
-    new_user = User(username=username, email=email, password=password, role=role)
-    db.session.add(new_user)
-    db.session.commit()
-    return True
+    hashed_password = generate_password_hash(password)
+    try:
+        sql = text("INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)")
+        db.session.execute(sql, {"username": username, "email": email, "password": hashed_password, "role": role})
+        db.session.commit()
+    except IntegrityError:
+        raise Exception("Username or Email already exists.")
+    except Exception as e:
+        raise Exception(f"Error registering user: {str(e)}")
+    
