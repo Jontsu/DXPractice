@@ -68,7 +68,7 @@ def register_routes(app):
     def display_exercise_route(exercise_id):
         exercise = exercises.get_exercise_by_id(exercise_id)
         creator = exercises.get_creator_of_exercise(exercise_id)
-        return render_template('exercise.html', exercise=exercise, creator=creator)
+        return render_template('exercise_display.html', exercise=exercise, creator=creator)
 
     @app.route('/create_exercise', methods=['GET', 'POST'])
     def create_exercise_route():
@@ -93,7 +93,37 @@ def register_routes(app):
                 except Exception as e:
                     error = f"Unexpected error occurred: {str(e)}"
                 
-        return render_template('create_exercise.html', error=error)
+        return render_template('exercise_create.html', error=error)
+
+    @app.route('/exercise/<int:exercise_id>/edit', methods=['GET', 'POST'])
+    def edit_exercise_route(exercise_id):
+        error = None
+        exercise = exercises.get_exercise_by_id(exercise_id)
+        
+        if not exercise:
+            error = "Exercise not found"
+            return render_template('index.html', error=error)
+        
+        creator = exercises.get_creator_of_exercise(exercise_id)
+        if session.get('user_id') != creator.id:
+            error = "Unauthorised access"
+            return render_template('index.html', error=error)
+
+        if request.method == 'POST':
+            users.check_csrf()
+            name = request.form.get('name')
+            tasks = request.form.get('tasks')
+            
+            if not name or not tasks:
+                error = "Both name and tasks are required"
+            else:
+                try:
+                    exercises.update_exercise(exercise_id, name, tasks)
+                    return redirect(url_for('display_exercise_route', exercise_id=exercise_id))
+                except Exception as e:
+                    error = f"Unexpected error occurred: {str(e)}"
+        
+        return render_template('exercise_edit.html', exercise=exercise, error=error)
 
     @app.route('/exercise/<int:exercise_id>/delete', methods=['POST'])
     def delete_exercise_route(exercise_id):

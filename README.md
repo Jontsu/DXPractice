@@ -23,8 +23,6 @@ Teachers can create exercises in the tool, which consist of different coding tas
 - Create a user statistics feature to track and display user activity.
 - Develop a student performance tracking system.
 - Implement input verifications for user data, such as ensuring email addresses are in the correct format and passwords meet minimum complexity requirements.
-- Improve the styling of the exercise page for better user experience.
-- Add an edit functionality for the exercise, but only for the user who created it.
 
 ## Developing
 

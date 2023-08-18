@@ -28,7 +28,7 @@ def get_creator_of_exercise(exercise_id):
 def create_exercise(name, tasks, creator_id):
     try:
         sql = text("INSERT INTO exercises (name, tasks, creator_id) VALUES (:name, :tasks, :creator_id)")
-        result = db.session.execute(sql, {"name": name, "tasks": tasks, "creator_id": creator_id})
+        db.session.execute(sql, {"name": name, "tasks": tasks, "creator_id": creator_id})
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
@@ -36,6 +36,16 @@ def create_exercise(name, tasks, creator_id):
     except Exception as e:
         db.session.rollback()
         raise Exception(f"Error creating exercise: {str(e)}")
+
+
+def update_exercise(exercise_id, name, tasks):
+    try:
+        sql = text("UPDATE exercises SET name = :name, tasks = :tasks WHERE id = :exercise_id")
+        db.session.execute(sql, {"exercise_id": exercise_id, "name": name, "tasks": tasks})
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise Exception(f"Error updating exercise: {str(e)}")
 
 
 def delete_exercise(exercise_id, creator_id):
