@@ -82,6 +82,10 @@ def register_routes(app):
                 error = "Both name and tasks are required"
             else:
                 user = users.get_user_by_username(session['username'])
+
+                if not user or user[4] != 'teacher':
+                    return redirect(url_for('index_route'))
+
                 creator_id = user[0]
                 try:
                     exercises.create_exercise(name, tasks, creator_id)
@@ -97,14 +101,14 @@ def register_routes(app):
         if request.method == 'POST':
             users.check_csrf()
             user = users.get_user_by_username(session['username'])
-            creator_id = user[0]
+
+            if not user or user[4] != 'teacher':
+                error = "Unauthorised access"
 
             try:
-                if exercises.delete_exercise(exercise_id, creator_id):
-                    return redirect(url_for('index_route'))
-                else:
-                    error = "Unauthorised"
+                exercises.delete_exercise(exercise_id, user[0])
+                return redirect(url_for('index_route'))
             except Exception as e:
                 error = f"Unexpected error occurred: {str(e)}"
             
-        return render_template('delete_exercise.html', error=error)
+        return render_template('index.html', error=error)

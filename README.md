@@ -22,9 +22,7 @@ Teachers can create exercises in the tool, which consist of different coding tas
 - Develop a peer review system for solutions.
 - Create a user statistics feature to track and display user activity.
 - Develop a student performance tracking system.
-- Define and implement teacher and student roles, each with their appropriate access restrictions. Only teachers should be able to create exercises.
 - Implement input verifications for user data, such as ensuring email addresses are in the correct format and passwords meet minimum complexity requirements.
-- Improve error handling to provide more informative and user-friendly error messages.
 - Improve the styling of the exercise page for better user experience.
 - Add an edit functionality for the exercise, but only for the user who created it.
 

@@ -31,6 +31,7 @@ def create_exercise(name, tasks, creator_id):
         result = db.session.execute(sql, {"name": name, "tasks": tasks, "creator_id": creator_id})
         db.session.commit()
     except IntegrityError:
+        db.session.rollback()
         raise Exception("Exercise name already exists")
     except Exception as e:
         db.session.rollback()

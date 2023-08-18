@@ -24,8 +24,10 @@ def register_user(username, email, password, role):
         db.session.execute(sql, {"username": username, "email": email, "password": hashed_password, "role": role})
         db.session.commit()
     except IntegrityError:
+        db.session.rollback()
         raise Exception("Username or Email already exists.")
     except Exception as e:
+        db.session.rollback()
         raise Exception(f"Error registering user: {str(e)}")
     
 
@@ -58,13 +60,11 @@ def logout_user():
 
 
 def get_or_create_csrf_token():
-    print(session)
     if "csrf_token" not in session:
         session["csrf_token"] = os.urandom(16).hex()
     return session["csrf_token"]
 
 
 def check_csrf():
-    print(session)
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)

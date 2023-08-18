@@ -126,6 +126,16 @@ a.exercise-link {
     margin-right: 20px;     
 }
 
+.delete-button {
+    background-color: #1C1C2D;
+    color: #FAF3E0;
+    padding: 0;
+    line-height: normal;
+    width: 100px;
+    height: 40px;
+    margin-left: 20px;
+}
+
 .error-message {
     color: red;
     font-weight: bold;

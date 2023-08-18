@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="input-field">
-        <a href="{{ url_for('create_exercise_route') }}">Create Exercise</a>
+        {% if session.role == "teacher" %}
+            <a href="{{ url_for('create_exercise_route') }}" class="button">Create Exercise</a>
+        {% endif %}
         <h2>Available Exercises</h2>
     </div>
     <ul>
