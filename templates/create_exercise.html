@@ -6,6 +6,7 @@
             Name: <input type="text" name="name" required><br>
             Tasks: <textarea name="tasks" required></textarea><br>
         </div>   
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Create" class="button input-button">
     </form>
 {% endblock %}

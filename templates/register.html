@@ -9,6 +9,7 @@
             Password again: <input type="password" name="password2" required><br>
             Role: <input type="text" name="role" required><br>
         </div>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" value="Register" class="button input-button">
     </form>
     {% if error %}

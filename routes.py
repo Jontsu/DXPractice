@@ -9,32 +9,6 @@ def register_routes(app):
         all_exercises = exercises.get_all_exercises()
         return render_template('index.html', exercises=all_exercises)
 
-    @app.route('/login', methods=['GET', 'POST'])
-    def login_route():
-        error = None
-        if request.method == 'POST':
-            username = request.form.get('username')
-            password = request.form.get('password')
-
-            if not username or not password:
-                error = "Both username and password are required"
-            else:
-                try:
-                    if users.login_user(username, password):
-                        session['username'] = username
-                        return redirect(url_for('index_route'))
-                    else:
-                        error = "Invalid credentials"
-                except Exception as e:
-                    error = f"Unexpected error occurred: {str(e)}"
-
-        return render_template('login.html', error=error)
-
-    @app.route('/logout')
-    def logout_route():
-        session.pop('username', None)
-        return redirect(url_for('index_route'))
-
     @app.route('/register', methods=['GET', 'POST'])
     def register_route():
         error = None
@@ -60,7 +34,35 @@ def register_routes(app):
                 except Exception as e:
                     error = f"Unexpected error occurred: {str(e)}"
 
-        return render_template('register.html', error=error)
+        csrf_token = users.get_or_create_csrf_token()
+        return render_template('register.html', error=error, csrf_token=csrf_token)
+
+    @app.route('/login', methods=['GET', 'POST'])
+    def login_route():
+        error = None
+        if request.method == 'POST':
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+            if not username or not password:
+                error = "Both username and password are required"
+            else:
+                try:
+                    if users.login_user(username, password):
+                        session['username'] = username
+                        return redirect(url_for('index_route'))
+                    else:
+                        error = "Invalid credentials"
+                except Exception as e:
+                    error = f"Unexpected error occurred: {str(e)}"
+
+        csrf_token = users.get_or_create_csrf_token()
+        return render_template('login.html', error=error, csrf_token=csrf_token)
+
+    @app.route('/logout')
+    def logout_route():
+        users.logout_user()
+        return redirect(url_for('index_route'))
 
     @app.route('/exercise/<int:exercise_id>', methods=['GET'])
     def display_exercise_route(exercise_id):
@@ -72,6 +74,7 @@ def register_routes(app):
     def create_exercise_route():
         error = None
         if request.method == 'POST':
+            users.check_csrf()
             name = request.form.get('name')
             tasks = request.form.get('tasks')
 
@@ -92,6 +95,7 @@ def register_routes(app):
     def delete_exercise_route(exercise_id):
         error = None
         if request.method == 'POST':
+            users.check_csrf()
             user = users.get_user_by_username(session['username'])
             creator_id = user[0]
 
