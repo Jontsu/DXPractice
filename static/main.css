@@ -137,3 +137,15 @@ a.exercise-link {
     color: red;
     font-weight: bold;
 }
+
+.solution-submission form {
+ display: flex;
+ flex-direction: column;
+ align-items: flex-start;
+}
+
+.solution-submission label {
+ display: inline-block;
+ margin-right: 10px;
+ width: 150px;
+}

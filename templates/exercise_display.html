@@ -4,6 +4,9 @@
     <p>Created by: {{ creator.username }}</p>
     <h2>Tasks:</h2>
     <div class="task-text">{{ exercise.tasks }}</div>
+    {% if session.role == "student" %}
+        {% include "solutions.html" %}
+    {% endif %}
 {% endblock %}
 {% block action_buttons %}
     {% if session.user_id == creator.id %}

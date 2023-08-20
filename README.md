@@ -7,22 +7,20 @@ Teachers can create exercises in the tool, which consist of different coding tas
 
 - **Account Management:** Students and teachers can log in and out, as well as create a new account.
 - **Exercise Catalog:** Users can view a list of the available exercises in the tool and can access information about each exercise.
-- **Coding Practice:** Students can practice their coding skills by providing solutions to the tasks in the exercise. On each task, the student will write code for a randomly selected topic, which will then be submitted for review.
-- **Peer Review:** The solutions provided by students are graded and reviewed by their peers. Each solution must receive a minimum of three reviews by other students before a grade is assigned, enhancing the student's learning and understanding through peer evaluation.
-- **User Statistics:** Students can see statistics from each exercise, such as the number of tasks they have attempted and the feedback on their solutions, along with their grades based on the peer reviews.
+- **Coding Practice:** Students can practice their coding skills by providing solutions to the tasks in the exercise. Solutions are managed via GitHub, either by establishing a new repository or generating an issue within an existing repository. The solution's GitHub link is provided to the tool.
+- **Peer Review:** The solutions submitted by students are reviewed by other students. Reviews are submitted as issues within GitHub. The review's GitHub link is provided to the tool.
+- **User Statistics:** Students can track which tasks they not completed yet through their profile page.
 - **Exercise Creation (Teachers only):** Only teachers can create a new exercise by providing the name of the exercise and a list of tasks in text format.
-- **Exercise Deletion (Teachers only):** Teachers can delete exercises that they have created.
-- **Access Student Performance (Teachers only):** Teachers can access statistics that show the performance of each student on every exercise they have created, including the grades they have received based on peer reviews.
+- **Exercise Deletion or Edit (Teachers only):** Teachers can delete or edit exercises they have created.
+- **Access Student Performance (Teachers only):** Teachers can monitor through their profile page which tasks their students have completed or not completed.
 
 ## Current Application Build
 [Current version can be viewed here](https://guarded-taiga-97204-f0af444033df.herokuapp.com)
 
 ## TO DO's
-- Implement a feature for returning solutions, which includes an input field for GitHub links.
-- Develop a peer review system for solutions.
-- Create a user statistics feature to track and display user activity.
-- Develop a student performance tracking system.
-- Implement input verifications for user data, such as ensuring email addresses are in the correct format and passwords meet minimum complexity requirements.
+- User page, for students it displays their tasks (exercises with missing solutions), for teachers it displays all the students and whether they have completed all their tasks
+- Refactor code more readable
+- Create finalised styling
 
 ## Developing
 

@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for, session
-from components import users, exercises
+from components import users, exercises, solutions
 
 
 def register_routes(app):
@@ -14,21 +14,21 @@ def register_routes(app):
         error = None
         if request.method == 'POST':
             username = request.form.get('username')
-            email = request.form.get('email')
+            github_handle = request.form.get('github_handle')
             password1 = request.form.get('password1')
             password2 = request.form.get('password2')
             role = request.form.get('role')
             
-            if not username or not email or not password1 or not password2 or not role:
+            if not username or not github_handle or not password1 or not password2 or not role:
                 error = "All fields are required"
             elif password1 != password2:
                 error = "Passwords do not match"
             elif len(password1) < 4:
-                error = "Password should be at least 8 characters long"
+                error = "Password should be at least 4 characters long"
 
             if not error:
                 try:
-                    users.register_user(username, email, password1, role)
+                    users.register_user(username, github_handle, password1, role)
                     session['username'] = username
                     return redirect(url_for('index_route'))
                 except Exception as e:
@@ -68,7 +68,11 @@ def register_routes(app):
     def display_exercise_route(exercise_id):
         exercise = exercises.get_exercise_by_id(exercise_id)
         creator = exercises.get_creator_of_exercise(exercise_id)
-        return render_template('exercise_display.html', exercise=exercise, creator=creator)
+        solution_data = None
+        if "user_id" in session:
+            solution_data = solutions.get_solution_by_user_and_exercise(session["user_id"], exercise_id)
+
+        return render_template('exercise_display.html', exercise=exercise, creator=creator, solution_data=solution_data)
 
     @app.route('/create_exercise', methods=['GET', 'POST'])
     def create_exercise_route():
@@ -142,3 +146,24 @@ def register_routes(app):
                 error = f"Unexpected error occurred: {str(e)}"
             
         return render_template('index.html', error=error)
+
+    @app.route('/exercise/<int:exercise_id>/submit_solution', methods=['POST'])
+    def submit_solution_route(exercise_id):
+        error = None
+        if request.method == 'POST':
+            users.check_csrf()
+            solution_link = request.form.get('solution_link')
+            comment_link_1 = request.form.get('comment_link_1')
+            comment_link_2 = request.form.get('comment_link_2')
+            comment_link_3 = request.form.get('comment_link_3')
+
+            try:
+                user = users.get_user_by_username(session['username'])
+                submitter_id = user[0]
+                solutions.submit_or_update_solution(exercise_id, submitter_id, solution_link, comment_link_1, comment_link_2, comment_link_3)
+                return redirect(url_for('display_exercise_route', exercise_id=exercise_id))
+            except Exception as e:
+                error = f"Unexpected error occurred: {str(e)}"
+
+        exercise = exercises.get_exercise_by_id(exercise_id)
+        return render_template('exercise_display.html', exercise=exercise, error=error)
