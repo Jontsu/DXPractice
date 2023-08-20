@@ -8,7 +8,8 @@ def get_solution_by_user_and_exercise(user_id, exercise_id):
     sql = text("""
         SELECT * 
         FROM solutions 
-        WHERE submitter_id = :user_id AND exercise_id = :exercise_id
+        WHERE submitter_id = :user_id 
+        AND exercise_id = :exercise_id
     """)
     result = db.session.execute(sql, {"user_id": user_id, "exercise_id": exercise_id})
     solution_data = result.fetchone()
