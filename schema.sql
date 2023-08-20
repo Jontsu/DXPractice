@@ -3,14 +3,14 @@ CREATE TABLE users (
     username TEXT UNIQUE NOT NULL,
     github_handle TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    role TEXT NOT NULL CHECK (role IN ('student', 'teacher')),
+    role TEXT NOT NULL CHECK (role IN ('student', 'teacher'))
 );
 
 CREATE TABLE exercises (
     id SERIAL PRIMARY KEY,
     creator_id INTEGER REFERENCES users,
     name TEXT UNIQUE NOT NULL,
-    tasks TEXT NOT NULL,
+    tasks TEXT NOT NULL
 );
 
 CREATE TABLE solutions (

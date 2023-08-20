@@ -15,20 +15,22 @@ Teachers can create exercises in the tool, which consist of different coding tas
 - **Access Student Performance (Teachers only):** Teachers can monitor through their profile page which tasks their students have completed or not completed.
 
 ## Current Application Build
-[Current version can be viewed here](https://guarded-taiga-97204-f0af444033df.herokuapp.com)
+The free plans for Heroku Postgres have been retired and so there is no deployed application build available. Please refer to Testing & Developing to test the application.
 
 ## TO DO's
+- Fix bug: when user registers they are not able to see their permissioned content unless they logout and login again (teachers "create exercise", students "solutions and their submit dialogue")
 - User page, for students it displays their tasks (exercises with missing solutions), for teachers it displays all the students and whether they have completed all their tasks
-- Refactor code more readable
-- Create finalised styling
+- Finalise styling
+- Deploy to GCP
 
-## Developing
+## Testing & Developing
 
-Create a .env file in the root directory of the project and add the following line, replacing your-secret-key with your actual secret key:
+Create a .env file in the root directory of the project and add your secret key and your local database uri:
 
 .env
 ```bash
 SECRET_KEY=your-secret-key
+SQLALCHEMY_DATABASE_URI='your-local-database-uri'
 ```
 
 You can generate a secret key using Python. Open the Python interpreter by typing python or python3 in your terminal, then enter the following commands:
@@ -38,9 +40,17 @@ import os
 print(os.urandom(24))
 ```
 
+It is probably a good idea to create a virtual environment prior to installing dependencies or running the application, so execute the following commands:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
 To install the necessary dependencies and start the development server, execute the following commands in your terminal. Make sure you are in the root directory of the application:
 
 ```bash
 pip install -r requirements.txt
 flask run
 ```
+Database tables are created automatically or you can also write psql < schema.sql at the root folder should you prefer.
