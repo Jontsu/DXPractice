@@ -6,17 +6,27 @@ CREATE TABLE users (
     role TEXT NOT NULL CHECK (role IN ('student', 'teacher'))
 );
 
+CREATE TABLE permitted_teachers (
+    id SERIAL PRIMARY KEY,
+    github_handle TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE permitted_students (
+    id SERIAL PRIMARY KEY,
+    github_handle TEXT NOT NULL UNIQUE
+);
+
 CREATE TABLE exercises (
     id SERIAL PRIMARY KEY,
-    creator_id INTEGER REFERENCES users,
+    creator_id INTEGER REFERENCES users ON DELETE CASCADE,
     name TEXT UNIQUE NOT NULL,
     tasks TEXT NOT NULL
 );
 
 CREATE TABLE solutions (
     id SERIAL PRIMARY KEY,
-    exercise_id INTEGER REFERENCES exercises,
-    submitter_id INTEGER REFERENCES users,
+    exercise_id INTEGER REFERENCES exercises ON DELETE CASCADE,
+    submitter_id INTEGER REFERENCES users ON DELETE CASCADE,
     solution_link TEXT NOT NULL,
     comment_link_1 TEXT NOT NULL,
     comment_link_2 TEXT NOT NULL,

@@ -18,8 +18,8 @@ Teachers can create exercises in the tool, which consist of different coding tas
 The free plans for Heroku Postgres have been retired and so there is no deployed application build available. Please refer to Testing & Developing to test the application.
 
 ## TO DO's
-- Fix bug: when user registers they are not able to see their permissioned content unless they logout and login again (teachers "create exercise", students "solutions and their submit dialogue")
-- User page, for students it displays their tasks (exercises with missing solutions), for teachers it displays all the students and whether they have completed all their tasks
+- Create logic for the two new datatables
+- User page or other way to display incomplete exercises or students who have not completed exercises (student / teacher different status)
 - Finalise styling
 - Deploy to GCP
 
@@ -54,3 +54,13 @@ pip install -r requirements.txt
 flask run
 ```
 Database tables are created automatically or you can also write psql < schema.sql at the root folder should you prefer.
+
+
+Lessons:
+- Clean code principles (read the Clean code book table of contents for the exercise structure)
+- Identify any areas where the naming convention is unclear and you are not sure what the particular area of the code does
+- Identify any if statments that are hard to follow (e.g. nested if statements that do not follow negative cases first principe).
+- Identify any areas where do not repeat yourself is not implemented
+
+
+Refactor css file based on Tailwind's documentation (or youtube info, e.g. corners class, etc)

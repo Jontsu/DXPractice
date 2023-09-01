@@ -29,7 +29,7 @@ def register_routes(app):
             if not error:
                 try:
                     users.register_user(username, github_handle, password1, role)
-                    session['username'] = username
+                    users.login_user(username, password1)
                     return redirect(url_for('index_route'))
                 except Exception as e:
                     error = f"Unexpected error occurred: {str(e)}"
@@ -49,7 +49,6 @@ def register_routes(app):
             else:
                 try:
                     if users.login_user(username, password):
-                        session['username'] = username
                         return redirect(url_for('index_route'))
                     else:
                         error = "Invalid credentials"
