@@ -21,7 +21,10 @@ def get_all_permitted_users():
 
 
 def is_permitted(github_handle, role):
-    table_name = "permitted_teachers" if role == "teacher" else "permitted_students"
+    if role == "teacher":
+        table_name = "permitted_teachers"
+    else:
+        table_name = "permitted_students"
     sql = text(f"""
         SELECT * 
         FROM {table_name} 

@@ -70,23 +70,15 @@ def update_exercise(exercise_id, name, tasks):
 def delete_exercise(exercise_id, creator_id):
     try:
         sql = text("""
-            SELECT creator_id 
-            FROM exercises 
-            WHERE id = :exercise_id
+            DELETE FROM exercises 
+            WHERE id = :exercise_id AND creator_id = :creator_id
         """)
-        result = db.session.execute(sql, {"exercise_id": exercise_id})
-        exercise = result.fetchone()
-        
-        if exercise and exercise[0] == creator_id:
-            sql_del = text("""
-                    DELETE FROM exercises 
-                    WHERE id = :exercise_id
-            """)
-            db.session.execute(sql_del, {"exercise_id": exercise_id})
-            db.session.commit()
-            return True
-        
-        return False
+        result = db.session.execute(sql, {"exercise_id": exercise_id, "creator_id": creator_id})
+        db.session.commit()
+
+        if result.rowcount == 0:
+            return False
+        return True
     except Exception as e:
         db.session.rollback()
         raise Exception(f"Error deleting exercise: {str(e)}")

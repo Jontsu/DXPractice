@@ -51,7 +51,10 @@
                {% for user in permitted_users %}
                    <li>
                        {{ user.role }}, {{ user.github_handle }} <br>
-                       <a href="{{ url_for('delete_permitted_user_route', github_handle=user.github_handle) }}" class="button">Delete</a>
+                       <form method="POST" action="{{ url_for('delete_permitted_user_route', github_handle=user.github_handle) }}" style="display: inline-block;">
+                           <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                           <input type="submit" value="Delete" class="button">
+                       </form>                                       
                    </li>
                {% endfor %}
            {% else %}

@@ -4,11 +4,13 @@ from components import users, exercises, solutions, permissions
 
 def register_routes(app):
 
+
     @app.route('/')
     def index_route():
         all_exercises = exercises.get_all_exercises()
         return render_template('index.html', exercises=all_exercises)
-    
+
+
     @app.route('/request_permission', methods=['GET', 'POST'])
     def request_permission_route():
         error = None
@@ -25,6 +27,7 @@ def register_routes(app):
         csrf_token = users.get_or_create_csrf_token()
         return render_template('request_permission.html', error=error, csrf_token=csrf_token)
 
+
     @app.route('/manage_permissions', methods=['GET', 'POST'])
     def manage_permissions_route():
         error = None
@@ -33,19 +36,15 @@ def register_routes(app):
             users.check_csrf()
             action = request.form.get('action')
             request_id = request.form.get('request_id')
-            
+            github_handle = request.form.get('github_handle')
+            role = request.form.get('role')
+
             if action == 'approve':
                 permissions.update_request_status(request_id, 'approved')
-                github_handle = request.form.get('github_handle')
-                role = request.form.get('role')
                 permissions.add_permitted_user(github_handle, role)
-                
             elif action == 'reject':
                 permissions.update_request_status(request_id, 'rejected')
-
             else:
-                github_handle = request.form.get('github_handle')
-                role = request.form.get('role')
                 try:
                     permissions.add_permitted_user(github_handle, role)
                 except Exception as e:
@@ -57,6 +56,7 @@ def register_routes(app):
 
         return render_template('manage_permissions.html', requests=requests, permitted_users=permitted_users, error=error, csrf_token=csrf_token)
 
+
     @app.route('/delete_permitted_user/<string:github_handle>', methods=['POST'])
     def delete_permitted_user_route(github_handle):
         try:
@@ -66,6 +66,7 @@ def register_routes(app):
             error = f"Error occurred: {str(e)}"
             return render_template('manage_permissions.html', error=error)
 
+
     @app.route('/register', methods=['GET', 'POST'])
     def register_route():
         error = None
@@ -73,7 +74,6 @@ def register_routes(app):
             github_handle = request.form.get('github_handle')
             password1 = request.form.get('password1')
             password2 = request.form.get('password2')
-            role = request.form.get('role')
             
             if not github_handle or not password1 or not password2:
                 error = "All fields are required"
@@ -92,6 +92,7 @@ def register_routes(app):
 
         csrf_token = users.get_or_create_csrf_token()
         return render_template('register.html', error=error, csrf_token=csrf_token)
+
 
     @app.route('/login', methods=['GET', 'POST'])
     def login_route():
@@ -114,10 +115,12 @@ def register_routes(app):
         csrf_token = users.get_or_create_csrf_token()
         return render_template('login.html', error=error, csrf_token=csrf_token)
 
+
     @app.route('/logout')
     def logout_route():
         users.logout_user()
         return redirect(url_for('index_route'))
+
 
     @app.route('/exercise/<int:exercise_id>', methods=['GET'])
     def display_exercise_route(exercise_id):
@@ -128,6 +131,7 @@ def register_routes(app):
             solution_data = solutions.get_solution_by_user_and_exercise(session["user_id"], exercise_id)
 
         return render_template('exercise_display.html', exercise=exercise, creator=creator, solution_data=solution_data)
+
 
     @app.route('/create_exercise', methods=['GET', 'POST'])
     def create_exercise_route():
@@ -153,6 +157,7 @@ def register_routes(app):
                     error = f"Error occurred: {str(e)}"
                 
         return render_template('exercise_create.html', error=error)
+
 
     @app.route('/exercise/<int:exercise_id>/edit', methods=['GET', 'POST'])
     def edit_exercise_route(exercise_id):
@@ -184,6 +189,7 @@ def register_routes(app):
         
         return render_template('exercise_edit.html', exercise=exercise, error=error)
 
+
     @app.route('/exercise/<int:exercise_id>/delete', methods=['POST'])
     def delete_exercise_route(exercise_id):
         error = None
@@ -201,6 +207,7 @@ def register_routes(app):
                 error = f"Error occurred: {str(e)}"
             
         return render_template('index.html', error=error)
+
 
     @app.route('/exercise/<int:exercise_id>/submit_solution', methods=['POST'])
     def submit_solution_route(exercise_id):

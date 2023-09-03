@@ -3,9 +3,9 @@ from flask import abort, request, session
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
-from components import permissions
 
 from db import db
+from components import permissions
 
 
 def get_all_users():
@@ -93,7 +93,7 @@ def login_user(github_handle, password):
 
 
 def logout_user():
-    keys_to_delete = ['user_id', 'github_handle', 'role', 'csrf_token']
+    keys_to_delete = ["user_id", "github_handle", "role", "csrf_token"]
     for key in keys_to_delete:
         try:
             del session[key]
