@@ -5,14 +5,12 @@ Teachers can create exercises in the tool, which consist of different coding tas
 
 ## Features of the tool include:
 
-- **Account Management:** Students and teachers can log in and out, as well as create a new account.
-- **Exercise Catalog:** Users can view a list of the available exercises in the tool and can access information about each exercise.
+- **Account Management:** Students and teachers can log in and out, as well as create a new account. Username is the user's GitHub handle and role is determined by teacher. Only users who have their GitHub handle whitelisted can create an account. If there are no users or no GitHub handles in the whitleist, the first user to register will become a teacher who can then manage the whitelist.
+- **Exercise Catalogue:** Users can view a list of the available exercises in the tool and can access information about each exercise.
 - **Coding Practice:** Students can practice their coding skills by providing solutions to the tasks in the exercise. Solutions are managed via GitHub, either by establishing a new repository or generating an issue within an existing repository. The solution's GitHub link is provided to the tool.
 - **Peer Review:** The solutions submitted by students are reviewed by other students. Reviews are submitted as issues within GitHub. The review's GitHub link is provided to the tool.
-- **User Statistics:** Students can track which tasks they not completed yet through their profile page.
 - **Exercise Creation (Teachers only):** Only teachers can create a new exercise by providing the name of the exercise and a list of tasks in text format.
-- **Exercise Deletion or Edit (Teachers only):** Teachers can delete or edit exercises they have created.
-- **Access Student Performance (Teachers only):** Teachers can monitor through their profile page which tasks their students have completed or not completed.
+- **Exercise Deletion or Edit (Teachers only):** Only a teacher who has created the exercise can delete or edit the given exercise.
 
 ## Current Application Build
 The free plans for Heroku Postgres have been retired and so there is no deployed application build available. Please refer to Testing & Developing to test the application.
@@ -41,20 +39,15 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
+Create and connect to your database and initialise it by typing the following at the root folder in your terminal:
+
+```bash
+psql < schema.sql 
+```
+
 To install the necessary dependencies and start the development server, execute the following commands in your terminal. Make sure you are in the root directory of the application:
 
 ```bash
 pip install -r requirements.txt
 flask run
 ```
-Database tables are created automatically or you can also write psql < schema.sql at the root folder should you prefer.
-
-
-Lessons:
-- Clean code principles (read the Clean code book table of contents for the exercise structure)
-- Identify any areas where the naming convention is unclear and you are not sure what the particular area of the code does
-- Identify any if statments that are hard to follow (e.g. nested if statements that do not follow negative cases first principe).
-- Identify any areas where do not repeat yourself is not implemented
-
-
-Refactor css file based on Tailwind's documentation (or youtube info, e.g. corners class, etc)
