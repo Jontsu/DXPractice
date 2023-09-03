@@ -20,6 +20,27 @@ def get_all_permitted_users():
     return teachers + students
 
 
+def get_pending_permission_requests():
+    sql = text("""
+        SELECT * 
+        FROM permission_requests 
+        WHERE status = 'pending'
+    """)
+    result = db.session.execute(sql)
+    return result.fetchall()
+
+
+def get_permission_request_status(github_handle):
+    sql = text("""
+        SELECT status 
+        FROM permission_requests 
+        WHERE github_handle = :github_handle
+    """)
+    result = db.session.execute(sql, {"github_handle": github_handle})
+    request_status = result.fetchone()
+    return request_status[0] if request_status else None
+
+
 def is_permitted(github_handle, role):
     if role == "teacher":
         table_name = "permitted_teachers"
@@ -62,9 +83,13 @@ def delete_permitted_user(github_handle):
 
 
 def add_permission_request(github_handle, requested_role):
+
+    if is_permitted(github_handle, "teacher") or is_permitted(github_handle, "student"):
+        raise Exception(f"{github_handle} is already permitted. Cannot make a new permission request.")
+
     existing_status = get_permission_request_status(github_handle)
     if existing_status:
-        raise Exception(f"Permission request for {github_handle} already exists with status {existing_status}, please wait or contact your teacher")
+        raise Exception(f"Permission request for {github_handle} already exists with status {existing_status}")
 
     try:
         sql = text("""
@@ -75,27 +100,6 @@ def add_permission_request(github_handle, requested_role):
         db.session.commit()
     except Exception as e:
         raise Exception(f"Error adding permission request")
-
-
-def get_pending_permission_requests():
-    sql = text("""
-        SELECT * 
-        FROM permission_requests 
-        WHERE status = 'pending'
-    """)
-    result = db.session.execute(sql)
-    return result.fetchall()
-
-
-def get_permission_request_status(github_handle):
-    sql = text("""
-        SELECT status 
-        FROM permission_requests 
-        WHERE github_handle = :github_handle
-    """)
-    result = db.session.execute(sql, {"github_handle": github_handle})
-    request_status = result.fetchone()
-    return request_status[0] if request_status else None
 
 
 def update_request_status(request_id, status):
