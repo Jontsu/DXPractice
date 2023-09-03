@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for, session
-from components import users, exercises, solutions
+from components import users, exercises, solutions, permissions
 
 
 def register_routes(app):
@@ -17,10 +17,10 @@ def register_routes(app):
             requested_role = request.form.get('requested_role')
             
             try:
-                users.add_permission_request(github_handle, requested_role)
+                permissions.add_permission_request(github_handle, requested_role)
                 return redirect(url_for('login_route'))
             except Exception as e:
-                error = f"Unexpected error occurred: {str(e)}"
+                error = f"Error occurred: {str(e)}"
 
         csrf_token = users.get_or_create_csrf_token()
         return render_template('request_permission.html', error=error, csrf_token=csrf_token)
@@ -35,24 +35,24 @@ def register_routes(app):
             request_id = request.form.get('request_id')
             
             if action == 'approve':
-                users.update_request_status(request_id, 'approved')
+                permissions.update_request_status(request_id, 'approved')
                 github_handle = request.form.get('github_handle')
                 role = request.form.get('role')
-                users.add_permitted_user(github_handle, role)
+                permissions.add_permitted_user(github_handle, role)
                 
             elif action == 'reject':
-                users.update_request_status(request_id, 'rejected')
+                permissions.update_request_status(request_id, 'rejected')
 
             else:
                 github_handle = request.form.get('github_handle')
                 role = request.form.get('role')
                 try:
-                    users.add_permitted_user(github_handle, role)
+                    permissions.add_permitted_user(github_handle, role)
                 except Exception as e:
-                    error = f"Unexpected error occurred: {str(e)}"
+                    error = f"Error occurred: {str(e)}"
 
-        requests = users.get_pending_permission_requests()
-        permitted_users = users.get_all_permitted_users()
+        requests = permissions.get_pending_permission_requests()
+        permitted_users = permissions.get_all_permitted_users()
         csrf_token = users.get_or_create_csrf_token()
 
         return render_template('manage_permissions.html', requests=requests, permitted_users=permitted_users, error=error, csrf_token=csrf_token)
@@ -60,10 +60,10 @@ def register_routes(app):
     @app.route('/delete_permitted_user/<string:github_handle>', methods=['POST'])
     def delete_permitted_user_route(github_handle):
         try:
-            users.delete_permitted_user(github_handle)
+            permissions.delete_permitted_user(github_handle)
             return redirect(url_for('manage_permissions_route'))
         except Exception as e:
-            error = f"Unexpected error occurred: {str(e)}"
+            error = f"Error occurred: {str(e)}"
             return render_template('manage_permissions.html', error=error)
 
     @app.route('/register', methods=['GET', 'POST'])
@@ -88,7 +88,7 @@ def register_routes(app):
                     users.login_user(github_handle, password1)
                     return redirect(url_for('index_route'))
                 except Exception as e:
-                    error = f"Unexpected error occurred: {str(e)}"
+                    error = f"Error occurred: {str(e)}"
 
         csrf_token = users.get_or_create_csrf_token()
         return render_template('register.html', error=error, csrf_token=csrf_token)
@@ -109,7 +109,7 @@ def register_routes(app):
                     else:
                         error = "Invalid credentials"
                 except Exception as e:
-                    error = f"Unexpected error occurred: {str(e)}"
+                    error = f"Error occurred: {str(e)}"
 
         csrf_token = users.get_or_create_csrf_token()
         return render_template('login.html', error=error, csrf_token=csrf_token)
@@ -150,7 +150,7 @@ def register_routes(app):
                     exercises.create_exercise(name, tasks, creator_id)
                     return redirect(url_for('index_route'))
                 except Exception as e:
-                    error = f"Unexpected error occurred: {str(e)}"
+                    error = f"Error occurred: {str(e)}"
                 
         return render_template('exercise_create.html', error=error)
 
@@ -180,7 +180,7 @@ def register_routes(app):
                     exercises.update_exercise(exercise_id, name, tasks)
                     return redirect(url_for('display_exercise_route', exercise_id=exercise_id))
                 except Exception as e:
-                    error = f"Unexpected error occurred: {str(e)}"
+                    error = f"Error occurred: {str(e)}"
         
         return render_template('exercise_edit.html', exercise=exercise, error=error)
 
@@ -198,7 +198,7 @@ def register_routes(app):
                 exercises.delete_exercise(exercise_id, user[0])
                 return redirect(url_for('index_route'))
             except Exception as e:
-                error = f"Unexpected error occurred: {str(e)}"
+                error = f"Error occurred: {str(e)}"
             
         return render_template('index.html', error=error)
 
@@ -218,7 +218,7 @@ def register_routes(app):
                 solutions.submit_or_update_solution(exercise_id, submitter_id, solution_link, comment_link_1, comment_link_2, comment_link_3)
                 return redirect(url_for('display_exercise_route', exercise_id=exercise_id))
             except Exception as e:
-                error = f"Unexpected error occurred: {str(e)}"
+                error = f"Error occurred: {str(e)}"
 
         exercise = exercises.get_exercise_by_id(exercise_id)
         return render_template('exercise_display.html', exercise=exercise, error=error)

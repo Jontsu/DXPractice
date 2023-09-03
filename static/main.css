@@ -84,7 +84,8 @@ a.exercise-link {
     text-decoration: none;
     cursor: pointer;
     display: inline-block;
-    width: 100px;
+    min-width: 100px;
+    padding: 0 10px;
     margin: 5px;
     height: 40px;
     line-height: 40px;
