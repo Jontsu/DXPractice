@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from routes import register_routes
 
-from db import db, initialise_database
+from db import db
 
 
 app = Flask(__name__)
@@ -12,9 +12,6 @@ register_routes(app)
 @app.errorhandler(Exception)
 def handle_error(e):
     return render_template('error.html', message=str(e))
-
-with app.app_context():
-    initialise_database()
 
 if __name__ == '__main__':
     app.run(debug=True)
