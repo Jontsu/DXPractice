@@ -8,18 +8,74 @@ def register_routes(app):
     def index_route():
         all_exercises = exercises.get_all_exercises()
         return render_template('index.html', exercises=all_exercises)
+    
+    @app.route('/request_permission', methods=['GET', 'POST'])
+    def request_permission_route():
+        error = None
+        if request.method == 'POST':
+            github_handle = request.form.get('github_handle')
+            requested_role = request.form.get('requested_role')
+            
+            try:
+                users.add_permission_request(github_handle, requested_role)
+                return redirect(url_for('login_route'))
+            except Exception as e:
+                error = f"Unexpected error occurred: {str(e)}"
+
+        csrf_token = users.get_or_create_csrf_token()
+        return render_template('request_permission.html', error=error, csrf_token=csrf_token)
+
+    @app.route('/manage_permissions', methods=['GET', 'POST'])
+    def manage_permissions_route():
+        error = None
+
+        if request.method == 'POST':
+            users.check_csrf()
+            action = request.form.get('action')
+            request_id = request.form.get('request_id')
+            
+            if action == 'approve':
+                users.update_request_status(request_id, 'approved')
+                github_handle = request.form.get('github_handle')
+                role = request.form.get('role')
+                users.add_permitted_user(github_handle, role)
+                
+            elif action == 'reject':
+                users.update_request_status(request_id, 'rejected')
+
+            else:
+                github_handle = request.form.get('github_handle')
+                role = request.form.get('role')
+                try:
+                    users.add_permitted_user(github_handle, role)
+                except Exception as e:
+                    error = f"Unexpected error occurred: {str(e)}"
+
+        requests = users.get_pending_permission_requests()
+        permitted_users = users.get_all_permitted_users()
+        csrf_token = users.get_or_create_csrf_token()
+
+        return render_template('manage_permissions.html', requests=requests, permitted_users=permitted_users, error=error, csrf_token=csrf_token)
+
+    @app.route('/delete_permitted_user/<string:github_handle>', methods=['POST'])
+    def delete_permitted_user_route(github_handle):
+        try:
+            users.delete_permitted_user(github_handle)
+            return redirect(url_for('manage_permissions_route'))
+        except Exception as e:
+            error = f"Unexpected error occurred: {str(e)}"
+            return render_template('manage_permissions.html', error=error)
 
     @app.route('/register', methods=['GET', 'POST'])
     def register_route():
         error = None
         if request.method == 'POST':
-            username = request.form.get('username')
             github_handle = request.form.get('github_handle')
             password1 = request.form.get('password1')
             password2 = request.form.get('password2')
             role = request.form.get('role')
             
-            if not username or not github_handle or not password1 or not password2 or not role:
+            if not github_handle or not password1 or not password2:
                 error = "All fields are required"
             elif password1 != password2:
                 error = "Passwords do not match"
@@ -28,8 +84,8 @@ def register_routes(app):
 
             if not error:
                 try:
-                    users.register_user(username, github_handle, password1, role)
-                    users.login_user(username, password1)
+                    users.register_user(github_handle, password1)
+                    users.login_user(github_handle, password1)
                     return redirect(url_for('index_route'))
                 except Exception as e:
                     error = f"Unexpected error occurred: {str(e)}"
@@ -41,14 +97,14 @@ def register_routes(app):
     def login_route():
         error = None
         if request.method == 'POST':
-            username = request.form.get('username')
+            github_handle = request.form.get('github_handle')
             password = request.form.get('password')
 
-            if not username or not password:
-                error = "Both username and password are required"
+            if not github_handle or not password:
+                error = "Both github handle and password are required"
             else:
                 try:
-                    if users.login_user(username, password):
+                    if users.login_user(github_handle, password):
                         return redirect(url_for('index_route'))
                     else:
                         error = "Invalid credentials"
@@ -84,9 +140,9 @@ def register_routes(app):
             if not name or not tasks:
                 error = "Both name and tasks are required"
             else:
-                user = users.get_user_by_username(session['username'])
+                user = users.get_user_by_github_handle(session['github_handle'])
 
-                if not user or user[4] != 'teacher':
+                if not user or user[3] != 'teacher':
                     return redirect(url_for('index_route'))
 
                 creator_id = user[0]
@@ -133,9 +189,9 @@ def register_routes(app):
         error = None
         if request.method == 'POST':
             users.check_csrf()
-            user = users.get_user_by_username(session['username'])
+            user = users.get_user_by_github_handle(session['github_handle'])
 
-            if not user or user[4] != 'teacher':
+            if not user or user[3] != 'teacher':
                 error = "Unauthorised access"
 
             try:
@@ -157,7 +213,7 @@ def register_routes(app):
             comment_link_3 = request.form.get('comment_link_3')
 
             try:
-                user = users.get_user_by_username(session['username'])
+                user = users.get_user_by_github_handle(session['github_handle'])
                 submitter_id = user[0]
                 solutions.submit_or_update_solution(exercise_id, submitter_id, solution_link, comment_link_1, comment_link_2, comment_link_3)
                 return redirect(url_for('display_exercise_route', exercise_id=exercise_id))

@@ -17,12 +17,6 @@ Teachers can create exercises in the tool, which consist of different coding tas
 ## Current Application Build
 The free plans for Heroku Postgres have been retired and so there is no deployed application build available. Please refer to Testing & Developing to test the application.
 
-## TO DO's
-- Create logic for the two new datatables
-- User page or other way to display incomplete exercises or students who have not completed exercises (student / teacher different status)
-- Finalise styling
-- Deploy to GCP
-
 ## Testing & Developing
 
 Create a .env file in the root directory of the project and add your secret key and your local database uri:

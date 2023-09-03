@@ -1,7 +1,7 @@
 {% extends "layout_exercise.html" %}
 {% block title %}{{ exercise.name }}{% endblock %}
 {% block exercise_content %}
-    <p>Created by: {{ creator.username }}</p>
+    <p>Created by: {{ creator.github_handle }}</p>
     <h2>Tasks:</h2>
     <div class="task-text">{{ exercise.tasks }}</div>
     {% if session.role == "student" %}

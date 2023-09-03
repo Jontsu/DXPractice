@@ -3,6 +3,7 @@
     <div class="input-field">
         {% if session.role == "teacher" %}
             <a href="{{ url_for('create_exercise_route') }}" class="button">Create Exercise</a>
+            <a href="{{ url_for('manage_permissions_route') }}" class="button">Manage Permissions</a>
         {% endif %}
         <h2>Available Exercises</h2>
     </div>
